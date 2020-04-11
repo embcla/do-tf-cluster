@@ -1,0 +1,37 @@
+[Unit]
+Description=etcd service
+Documentation=https://github.com/coreos/etcd
+
+[Service]
+User=etcd
+Type=notif
+Environment="ETCD_NAME=${ETCD_NAME}"
+Environment="ETCD_DATA_DIR=${ETCD_FOLDER}"
+Environment="ETCD_HEARTBEAT_INTERVAL=120"
+Environment="ETCD_ELECTION_TIMEOUT=1200"
+Environment="ETCD_LISTEN_PEER_URLS=http://${ETCD_HOST_IP}:2380"
+Environment="ETCD_LISTEN_CLIENT_URLS=http://${ETCD_HOST_IP}:2379,http://127.0.0.1:2379"
+Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://${ETCD_HOST_IP}:2380"
+Environment="ETCD_ADVERTISE_CLIENT_URLS=http://${ETCD_HOST_IP}:2379"
+Environment="ETCD_INITIAL_CLUSTER=${ETCD_NAME_1}=http://${ETCD_MACHINE_1}:2380,${ETCD_NAME_2}=http://${ETCD_MACHINE_2}:2380,${ETCD_NAME_3}=http://${ETCD_MACHINE_3}:2380"
+Environment="ETCD_INITIAL_CLUSTER_STATE=new"
+Environment="ETCD_INITIAL_CLUSTER_TOKEN=$ETCD_TOKEN"
+
+ExecStart=/usr/bin/etcd
+#ExecStart=/usr/bin/etcd \
+# --name ${ETCD_NAME} \
+# --data-dir ${ETCD_FOLDER} \
+# --initial-advertise-peer-urls http://${ETCD_HOST_IP}:2380 \
+# --listen-peer-urls http://${ETCD_HOST_IP}:2380 \
+# --listen-client-urls http://${ETCD_HOST_IP}:2379,http://127.0.0.1:2379 \
+# --advertise-client-urls http://${ETCD_HOST_IP}:2379 \
+# --initial-cluster-token ${ETCD_TOKEN} \
+# --initial-cluster etcd-1=http://${ETCD_MACHINE_1}:2380,etcd-2=http://${ETCD_MACHINE_2}:2380,etcd-3=http://${ETCD_MACHINE_3}:2380 \
+# --initial-cluster-state new \
+# --heartbeat-interval 120 \
+# --election-timeout 360
+#Restart=on-failure
+#RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
